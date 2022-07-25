@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">Github contributor</string>
+    <string name="access_token_question">You do not have access developer token ? Click here to generate it</string>
+    <string name="github_username">Github Username</string>
+    <string name="password_token">Password/Token</string>
+    <string name="organization">Organization</string>
+    <string name="variant">Variant</string>
+    <string name="load_contributors">Load contributors</string>
+    <string name="cancel">cancel</string>
+    <string name="login">login</string>
+    <string name="contributors">Contributors</string>
+</resources>
