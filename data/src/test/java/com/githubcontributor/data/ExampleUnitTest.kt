@@ -1,4 +1,4 @@
-package com.githubcontributor.presentation
+package com.githubcontributor.data
 
 import org.junit.Test
 

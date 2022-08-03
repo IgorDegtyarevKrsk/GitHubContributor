@@ -11,7 +11,7 @@ fun loadContributorsBackground(gitHubRepository: GitHubRepository, req: RequestD
     }
 }
 
-private fun loadContributorsBlocking(gitHubRepository: GitHubRepository, req: RequestData) : List<User> {
+internal fun loadContributorsBlocking(gitHubRepository: GitHubRepository, req: RequestData) : List<User> {
     val repos = gitHubRepository
         .getOrgReposCall(req.org)
         .execute() // Executes request and blocks the current thread
