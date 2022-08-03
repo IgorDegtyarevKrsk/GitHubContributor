@@ -29,7 +29,6 @@ class MainViewModel @Inject constructor(
     private val gitHubUserLocalRepository: GitHubUserLocalRepository
 ): ViewModel() {
 
-    val accessTokenQuestionEnabledInit = getTokenUseCase.getToken().isEmpty()
     private val _accessTokenQuestionEnabled = MutableLiveData(
         getTokenUseCase.getToken().isEmpty()
     )

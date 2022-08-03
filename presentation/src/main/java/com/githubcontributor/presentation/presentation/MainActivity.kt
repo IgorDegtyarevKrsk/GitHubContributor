@@ -6,56 +6,35 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.ArrayAdapter
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.animation.addListener
 import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.RecyclerView
 import com.githubcontributor.domain.RequestData
 import com.githubcontributor.domain.Variant
 import com.githubcontributor.presentation.App
-import com.githubcontributor.presentation.R
+import com.githubcontributor.presentation.databinding.ActivityMainBinding
 import javax.inject.Inject
 
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var accessTokenQuestionTextView: TextView
-    private lateinit var userNameEditText: EditText
-    private lateinit var passwordEditText: EditText
-    private lateinit var organizationEditText: EditText
-    private lateinit var variantSpinner: Spinner
-    private lateinit var loadContributorButton: Button
-    private lateinit var cancelButton: Button
-    private lateinit var progressBar: ProgressBar
-    private lateinit var loadingStatusTextView: TextView
-
     private lateinit var viewModel: MainViewModel
+    private lateinit var binding: ActivityMainBinding
 
     @Inject
     lateinit var factory: ViewModelProvider.Factory
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
 
-        initViewMembers()
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        val view = binding.root
+        setContentView(view)
+
         initViewModel()
         initView()
-    }
-
-    private fun initViewMembers() {
-        accessTokenQuestionTextView = findViewById(R.id.accessTokenQuestionTextView)
-        userNameEditText = findViewById(R.id.githubUsernameEditText)
-        passwordEditText = findViewById(R.id.passwordTokenEditText)
-        organizationEditText = findViewById(R.id.organizationEditText)
-        variantSpinner = findViewById(R.id.variantSpinner)
-        loadContributorButton = findViewById(R.id.loadContributorsButton)
-        cancelButton = findViewById(R.id.cancelButton)
-        progressBar = findViewById(R.id.progressBar)
-        loadingStatusTextView = findViewById(R.id.loadingStatusTextView)
     }
 
     private fun initViewModel() {
@@ -65,79 +44,86 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initView() {
-        accessTokenQuestionTextView.isVisible = viewModel.accessTokenQuestionEnabledInit
-        viewModel.accessTokenQuestionEnabled.observe(this) { nextVisible ->
-            val isTextVisible = accessTokenQuestionTextView.isVisible
-            if (isTextVisible && !nextVisible) {
-                startHideAccessTokenAnimation()
-            } else accessTokenQuestionTextView.isVisible = nextVisible
-        }
-        accessTokenQuestionTextView.setOnClickListener {
-            val intent = Intent(Intent.ACTION_VIEW)
-            intent.data = Uri.parse("https://github.com/settings/tokens/new")
-            startActivity(intent)
-        }
+        initTokenQuestion()
         viewModel.savedVariant.apply {
-            userNameEditText.setText(username)
-            passwordEditText.setText(password)
-            organizationEditText.setText(org)
+            binding.githubUsernameEditText.setText(username)
+            binding.passwordTokenEditText.setText(password)
+            binding.organizationEditText.setText(org)
         }
 
         val variants = Variant.values().map { it.toString() }
-        variantSpinner.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, variants)
-        variantSpinner.setSelection(Variant.values().indexOf(viewModel.savedVariant.variant))
+        binding.variantSpinner.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, variants)
+        binding.variantSpinner.setSelection(Variant.values().indexOf(viewModel.savedVariant.variant))
 
-        loadContributorButton.setOnClickListener {
+        binding.loadContributorsButton.setOnClickListener {
             val req = RequestData(getUserName(), getPassword(), getOrganization())
             viewModel.chooseVariant(req, getSelectedVariant())
         }
         viewModel.loadButtonEnabled.observe(this) { isLoadEnabled ->
-            loadContributorButton.isEnabled = isLoadEnabled
+            binding.loadContributorsButton.isEnabled = isLoadEnabled
         }
-        cancelButton.setOnClickListener {
+        binding.cancelButton.setOnClickListener {
             viewModel.cancelClicked()
         }
         viewModel.cancelButtonEnabled.observe(this) { isCancelEnabled ->
-            cancelButton.isEnabled = isCancelEnabled
+            binding.cancelButton.isEnabled = isCancelEnabled
         }
         viewModel.iconRunning.observe(this) { isProgress ->
-            progressBar.visibility = if (isProgress) View.VISIBLE else View.INVISIBLE
+            binding.progressBar.visibility = if (isProgress) View.VISIBLE else View.INVISIBLE
         }
         viewModel.loadingStatusText.observe(this) { statusText ->
-            loadingStatusTextView.text = statusText
+            binding.loadingStatusTextView.text = statusText
         }
 
         val userAdapter = UsersRecyclerViewAdapter()
-        findViewById<RecyclerView>(R.id.recyclerView).adapter = userAdapter
+        binding.recyclerView.adapter = userAdapter
         viewModel.users.observe(this) { users ->
             userAdapter.users = users
         }
     }
 
+    private fun initTokenQuestion() {
+        binding.accessTokenQuestionTextView.isVisible =
+            viewModel.accessTokenQuestionEnabled.value == true
+        viewModel.accessTokenQuestionEnabled.observe(this) { nextVisible ->
+            binding.accessTokenQuestionTextView.let { textView ->
+                val isTextVisible = textView.isVisible
+                if (isTextVisible && !nextVisible) {
+                    startHideAccessTokenAnimation()
+                } else textView.isVisible = nextVisible
+            }
+        }
+        binding.accessTokenQuestionTextView.setOnClickListener {
+            val intent = Intent(Intent.ACTION_VIEW)
+            intent.data = Uri.parse("https://github.com/settings/tokens/new")
+            startActivity(intent)
+        }
+    }
+
     private fun startHideAccessTokenAnimation() {
-        val startHeight = accessTokenQuestionTextView.height
+        val startHeight = binding.accessTokenQuestionTextView.height
         val endHeight = 0
 
         val anim = ValueAnimator.ofInt(startHeight, endHeight)
         anim.addUpdateListener { valueAnimator ->
             val value = valueAnimator.animatedValue as Int
-            val layoutParams: ViewGroup.LayoutParams = accessTokenQuestionTextView.layoutParams
+            val layoutParams: ViewGroup.LayoutParams = binding.accessTokenQuestionTextView.layoutParams
             layoutParams.height = value
-            accessTokenQuestionTextView.layoutParams = layoutParams
+            binding.accessTokenQuestionTextView.layoutParams = layoutParams
         }
         anim.addListener(onEnd = {
-            accessTokenQuestionTextView.isVisible = false
+            binding.accessTokenQuestionTextView.isVisible = false
         })
         anim.duration = 800
         anim.start()
     }
 
-    private fun getOrganization() = organizationEditText.text.toString()
-    private fun getUserName() = userNameEditText.text.toString()
-    private fun getPassword() = passwordEditText.text.toString()
+    private fun getOrganization() = binding.organizationEditText.text.toString()
+    private fun getUserName() = binding.githubUserNameTextView.text.toString()
+    private fun getPassword() = binding.passwordTokenEditText.text.toString()
 
     private fun getSelectedVariant(): Variant {
-        val selectedVariantName = variantSpinner.selectedItem as String
+        val selectedVariantName = binding.variantSpinner.selectedItem as String
         return Variant.valueOf(selectedVariantName)
     }
 
