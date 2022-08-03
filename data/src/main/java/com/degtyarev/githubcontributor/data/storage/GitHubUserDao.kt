@@ -6,16 +6,16 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.degtyarev.githubcontributor.data.storage.db.GitHubUser
 import com.degtyarev.githubcontributor.data.storage.db.USER_TABLE
-import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface GitHubUserDao {
     @Query("SELECT * FROM $USER_TABLE")
-    fun getAllFlow(): Flow<List<GitHubUser>>
+    suspend fun getAll(): List<GitHubUser>
 
     @Query("DELETE FROM $USER_TABLE")
-    fun clear()
+    suspend fun clear()
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertAll(users: List<GitHubUser>)
+    suspend fun insertAll(users: List<GitHubUser>)
+
 }

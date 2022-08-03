@@ -46,15 +46,7 @@ class MainViewModel @Inject constructor(
     val cancelButtonEnabled: LiveData<Boolean>
         get() = _cancelButtonEnabled
 
-    private val _users: MutableLiveData<List<User>> by lazy {
-        viewModelScope.launch {
-            gitHubUserLocalRepository.getAll()
-                .collect { users ->
-                    _users.value = users
-                }
-        }
-        MutableLiveData<List<User>>()
-    }
+    private val _users = MutableLiveData<List<User>>()
     val users: LiveData<List<User>>
         get() = _users
 
@@ -65,6 +57,13 @@ class MainViewModel @Inject constructor(
     private val _loadingStatusText = MutableLiveData("")
     val loadingStatusText: LiveData<String>
         get() = _loadingStatusText
+
+    init {
+        viewModelScope.launch {
+            val users = gitHubUserLocalRepository.getUsers()
+            _users.postValue(users)
+        }
+    }
 
     fun chooseVariant(req: RequestData, variant: Variant) {
         saveParamsUseCase.save(req, variant)
@@ -129,9 +128,9 @@ class MainViewModel @Inject constructor(
     }
 
     private fun clearResults() {
-//        _users.value = emptyList()
-        viewModelScope.launch(context = Dispatchers.IO) {
+        viewModelScope.launch {
             gitHubUserLocalRepository.clear()
+            _users.postValue(emptyList())
         }
         updateLoadingStatus(LoadingStatus.IN_PROGRESS)
         setActionStatus(newLoadingEnabled = false)
@@ -144,9 +143,9 @@ class MainViewModel @Inject constructor(
         startTime: Long,
         completed: Boolean = true
     ) {
-//        _users.value = users
-        viewModelScope.launch(context = Dispatchers.IO) {
+        viewModelScope.launch {
             gitHubUserLocalRepository.saveAll(users)
+            _users.postValue(users)
         }
         updateLoadingStatus(if (completed) LoadingStatus.COMPLETED else LoadingStatus.IN_PROGRESS, startTime)
         if (completed) {
