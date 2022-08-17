@@ -2,11 +2,7 @@ package com.githubcontributor.presentation.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.githubcontributor.domain.repository.GitHubUserLocalRepository
-import com.githubcontributor.domain.repository.UserRepository
-import com.githubcontributor.domain.usecase.GetSavedVariant
-import com.githubcontributor.domain.usecase.GetTokenUseCase
-import com.githubcontributor.domain.usecase.SaveParamsUseCase
+import com.githubcontributor.presentation.presentation.ui.MainViewModel
 import javax.inject.Inject
 
 class MainViewModelFactory @Inject constructor(

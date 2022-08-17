@@ -1,4 +1,4 @@
-package com.githubcontributor.presentation.presentation
+package com.githubcontributor.presentation.presentation.ui
 
 import android.view.LayoutInflater
 import android.view.View

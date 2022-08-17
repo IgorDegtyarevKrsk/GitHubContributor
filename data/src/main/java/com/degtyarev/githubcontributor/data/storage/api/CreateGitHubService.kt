@@ -6,7 +6,7 @@ import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
-import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
+import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory
 import java.util.*
 
 fun createGitHubService(username: String, password: String): GitHubService {
@@ -26,7 +26,7 @@ fun createGitHubService(username: String, password: String): GitHubService {
     val retrofit = Retrofit.Builder()
         .baseUrl("https://api.github.com")
         .addConverterFactory(Json { ignoreUnknownKeys = true }.asConverterFactory(contentType))
-        .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+        .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
         .client(httpClient)
         .build()
     val create = retrofit.create(GitHubService::class.java)

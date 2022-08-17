@@ -6,21 +6,37 @@ import com.githubcontributor.domain.User
 import retrofit2.Response
 
 fun logRepos(organization: String, response: Response<List<Repo>>) {
-    val repos = response.body()
+    val repos: List<Repo>? = response.body()
     if (!response.isSuccessful || repos == null) {
-        Log.e(null, "Failed loading repos for $organization with response: '${response.code()}: ${response.message()}'")
-    }
-    else {
-        Log.i(null, "$organization: loaded ${repos.size} repos")
+        val responseErrorMessage = "${response.code()}: ${response.message()}"
+        logReposError(organization, responseErrorMessage)
+    } else {
+        logReposSuccess(organization, repos)
     }
 }
 
+fun logReposError(organization: String, errorMessage: String) {
+    Log.e(null, "Failed loading repos for $organization with response: '$errorMessage'")
+}
+
+fun logReposSuccess(organization: String, repos: List<Repo>) {
+    Log.i(null, "$organization: loaded ${repos.size} repos")
+}
+
 fun logUsers(repo: String, response: Response<List<User>>) {
-    val users = response.body()
+    val users: List<User>? = response.body()
     if (!response.isSuccessful || users == null) {
-        Log.e(null, "Failed loading contributors for $repo with response '${response.code()}: ${response.message()}'")
+        val responseErrorMessage = "${response.code()}: ${response.message()}"
+        logUsersError(repo, responseErrorMessage)
+    } else {
+        logUsersSuccess(repo, users)
     }
-    else {
-        Log.i(null, "$repo: loaded ${users.size} contributors")
-    }
+}
+
+fun logUsersError(repo: String, responseErrorMessage: String) {
+    Log.e(null, "Failed loading contributors for $repo with response '$responseErrorMessage'")
+}
+
+fun logUsersSuccess(repo: String, users: List<User>) {
+    Log.i(null, "$repo: loaded ${users.size} contributors")
 }

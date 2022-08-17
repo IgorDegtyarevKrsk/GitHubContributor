@@ -34,5 +34,7 @@ enum class Variant {
     CONCURRENT,       // RequestConcurrent // Performing requests concurrently
     NOT_CANCELLABLE,  // RequestNotCancellable // Performing requests in a non-cancellable way
     PROGRESS,         // RequestProgress // Showing progress
-    CHANNELS          // RequestChannels // Performing requests concurrently and showing progress
+    CHANNELS,          // RequestChannels // Performing requests concurrently and showing progress
+    Rx,
+    RxProgress
 }

@@ -1,10 +1,9 @@
-package com.githubcontributor.presentation.presentation
+package com.githubcontributor.presentation.presentation.ui
 
 import android.os.Handler
 import android.os.Looper
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.githubcontributor.domain.RequestData
 import com.githubcontributor.domain.RequestVariant
@@ -12,10 +11,16 @@ import com.githubcontributor.domain.User
 import com.githubcontributor.domain.Variant
 import com.githubcontributor.domain.repository.GitHubUserLocalRepository
 import com.githubcontributor.domain.tasks.*
+import com.githubcontributor.domain.tasks.rx.RequestRxProgress
+import com.githubcontributor.domain.tasks.rx.RequestRxSequence
 import com.githubcontributor.domain.usecase.GetSavedVariant
 import com.githubcontributor.domain.usecase.GetTokenUseCase
 import com.githubcontributor.domain.usecase.SaveParamsUseCase
 import com.githubcontributor.presentation.App
+import com.githubcontributor.presentation.presentation.RxViewModel
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.disposables.Disposable
+import io.reactivex.rxjava3.schedulers.Schedulers
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -26,8 +31,10 @@ class MainViewModel @Inject constructor(
     getTokenUseCase: GetTokenUseCase,
     private val getSavedVariant: GetSavedVariant,
     private val saveParamsUseCase: SaveParamsUseCase,
-    private val gitHubUserLocalRepository: GitHubUserLocalRepository
-): ViewModel() {
+    private val gitHubUserLocalRepository: GitHubUserLocalRepository,
+    private val requestRxSequence: RequestRxSequence,
+    private val concurrentRxProgress: RequestRxProgress
+): RxViewModel() {
 
     private val _accessTokenQuestionEnabled = MutableLiveData(
         getTokenUseCase.getToken().isEmpty()
@@ -123,6 +130,28 @@ class MainViewModel @Inject constructor(
                     }
                 }.setUpCancellation()
             }
+            Variant.Rx -> {
+                disposableContainer.add(
+                    requestRxSequence.loadContributorsRxSequence(req)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe { users -> updateResults(users, startTime) }
+                        .setUpCancellation()
+                )
+            }
+            Variant.RxProgress -> {
+                disposableContainer.add(
+                    concurrentRxProgress.loadContributorsRxProgress(req)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .doOnComplete {
+                            updateLoadingStatus(LoadingStatus.COMPLETED, startTime)
+                            setActionStatus(newLoadingEnabled = true)
+                        }
+                        .subscribe { users -> updateResults(users, startTime, false) }
+                        .setUpCancellation()
+                )
+            }
         }
     }
 
@@ -171,10 +200,13 @@ class MainViewModel @Inject constructor(
         _iconRunning.value = status == LoadingStatus.IN_PROGRESS
     }
 
-    private lateinit var loadingJob: Job
+    private var loadingJob: Job? = null
+    private var loadingDisposable: Disposable? = null
 
     fun cancelClicked() {
-        loadingJob.cancel()
+        loadingJob?.cancel()
+        loadingDisposable?.dispose()
+        setActionStatus(newLoadingEnabled = true)
         updateLoadingStatus(LoadingStatus.CANCELED)
     }
 
@@ -186,9 +218,16 @@ class MainViewModel @Inject constructor(
 
         // cancel the loading job if the 'cancel' button was clicked
         viewModelScope.launch {
-            loadingJob.join()
+            loadingJob!!.join()
             setActionStatus(newLoadingEnabled = true)
         }
+    }
+
+    private fun Disposable.setUpCancellation(): Disposable {
+        setActionStatus(newLoadingEnabled = false, cancellationEnabled = true)
+        loadingDisposable = this
+
+        return this
     }
 
     private fun setActionStatus(newLoadingEnabled: Boolean, cancellationEnabled: Boolean = false) {

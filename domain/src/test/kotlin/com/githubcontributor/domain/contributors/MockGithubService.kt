@@ -2,7 +2,9 @@ package com.githubcontributor.domain.contributors
 
 import com.githubcontributor.domain.Repo
 import com.githubcontributor.domain.User
+import com.githubcontributor.domain.contributors.reposMap
 import com.githubcontributor.domain.repository.GitHubRepository
+import io.reactivex.rxjava3.core.Single
 import kotlinx.coroutines.delay
 import retrofit2.Call
 import retrofit2.Response
@@ -26,5 +28,13 @@ object MockGithubService : GitHubRepository {
         val testRepo = reposMap.getValue(repo)
         delay(testRepo.delay)
         return Response.success(testRepo.users)
+    }
+
+    override fun getOrgReposSingle(org: String): Single<List<Repo>> {
+        TODO("Not yet implemented")
+    }
+
+    override fun getRepoContributorsSingle(owner: String, repo: String): Single<List<User>> {
+        TODO("Not yet implemented")
     }
 }

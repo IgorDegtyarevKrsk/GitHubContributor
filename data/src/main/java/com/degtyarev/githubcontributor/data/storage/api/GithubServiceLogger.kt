@@ -4,6 +4,7 @@ import android.util.Log
 import com.degtyarev.githubcontributor.data.storage.GitHubService
 import com.githubcontributor.domain.Repo
 import com.githubcontributor.domain.User
+import io.reactivex.rxjava3.core.Single
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -32,6 +33,18 @@ class GithubServiceLogger(private val service: GitHubService): GitHubService {
         val result = service.getRepoContributors(owner, repo)
         logUsers(repo, result)
         return result
+    }
+
+    override fun getOrgReposSingle(org: String): Single<List<Repo>> {
+        return service.getOrgReposSingle(org)
+            .doOnSuccess { logReposSuccess(org, it) }
+            .doOnError { logReposError(org, it.toString()) }
+    }
+
+    override fun getRepoContributorsSingle(owner: String, repo: String): Single<List<User>> {
+        return service.getRepoContributorsSingle(owner, repo)
+            .doOnSuccess { logUsersSuccess(repo, it) }
+            .doOnError { logUsersError(repo, it.toString()) }
     }
 
     class CallExecuteLogger<T>(private val call: Call<T>, private val logger: (Response<T>) -> Unit): Call<T> by call {

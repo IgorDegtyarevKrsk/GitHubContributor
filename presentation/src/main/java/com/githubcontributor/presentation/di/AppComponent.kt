@@ -1,7 +1,7 @@
 package com.githubcontributor.presentation.di
 
 import com.githubcontributor.domain.repository.GitHubRepository
-import com.githubcontributor.presentation.presentation.MainActivity
+import com.githubcontributor.presentation.presentation.ui.MainActivity
 import dagger.Component
 import javax.inject.Singleton
 

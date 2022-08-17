@@ -1,6 +1,8 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 buildscript {
     ext.roomVersion = "2.4.3"
+    ext.rxVersion = "3.1.5"
+    ext.retrofitVersion = "2.9.0"
 }
 
 plugins {

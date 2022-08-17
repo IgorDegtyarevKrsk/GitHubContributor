@@ -4,6 +4,7 @@ import com.degtyarev.githubcontributor.data.storage.GitHubService
 import com.githubcontributor.domain.repository.GitHubRepository
 import com.githubcontributor.domain.Repo
 import com.githubcontributor.domain.User
+import io.reactivex.rxjava3.core.Single
 import retrofit2.Call
 import retrofit2.Response
 
@@ -24,5 +25,13 @@ class GitHubRepositoryImpl(
 
     override suspend fun getRepoContributors(owner: String, repo: String): Response<List<User>> {
         return service.getRepoContributors(owner, repo)
+    }
+
+    override fun getOrgReposSingle(org: String): Single<List<Repo>> {
+        return service.getOrgReposSingle(org)
+    }
+
+    override fun getRepoContributorsSingle(owner: String, repo: String): Single<List<User>> {
+        return service.getRepoContributorsSingle(owner, repo)
     }
 }
