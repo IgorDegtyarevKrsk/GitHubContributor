@@ -14,3 +14,10 @@ Ways:
 - RxJava
 - RxJava with progress
 Save user params. Save request data to db.
+Stack:
+- Retrofit
+- Coroutines
+- RxJava
+- Room
+- Dagger
+- MVVM
