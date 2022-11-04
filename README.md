@@ -14,7 +14,8 @@ Ways:
 - RxJava
 - RxJava with progress
 Save user params. Save request data to db.
-Stack:
+
+# Technical stack:
 - Retrofit
 - Coroutines
 - RxJava
