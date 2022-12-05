@@ -1,4 +1,4 @@
-package com.githubcontributor.presentation.presentation.ui
+package com.githubcontributor.presentation.ui
 
 import android.animation.ValueAnimator
 import android.content.Intent
@@ -11,10 +11,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.animation.addListener
 import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
+import com.degtyarev.presentation.databinding.ActivityMainBinding
+import com.githubcontributor.presentation.PresentationProvider
 import com.githubcontributor.domain.RequestData
 import com.githubcontributor.domain.Variant
-import com.githubcontributor.presentation.App
-import com.githubcontributor.presentation.databinding.ActivityMainBinding
 import javax.inject.Inject
 
 
@@ -38,7 +38,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initViewModel() {
-        App.appComponent.inject(this)
+        (application as PresentationProvider).inject(this)
         viewModel = ViewModelProvider(this, factory)
             .get(MainViewModel::class.java)
     }
@@ -57,7 +57,10 @@ class MainActivity : AppCompatActivity() {
 
         binding.loadContributorsButton.setOnClickListener {
             val req = RequestData(getUserName(), getPassword(), getOrganization())
-            viewModel.chooseVariant(req, getSelectedVariant())
+            val githubRepositoryProvider = {
+                (application as PresentationProvider).getGithubRepository()
+            }
+            viewModel.chooseVariant(req, getSelectedVariant(), githubRepositoryProvider)
         }
         viewModel.loadButtonEnabled.observe(this) { isLoadEnabled ->
             binding.loadContributorsButton.isEnabled = isLoadEnabled

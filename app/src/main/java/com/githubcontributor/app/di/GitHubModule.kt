@@ -1,4 +1,4 @@
-package com.githubcontributor.presentation.di
+package com.githubcontributor.app.di
 
 import com.degtyarev.githubcontributor.data.storage.GitHubService
 import com.degtyarev.githubcontributor.data.storage.api.createGitHubService

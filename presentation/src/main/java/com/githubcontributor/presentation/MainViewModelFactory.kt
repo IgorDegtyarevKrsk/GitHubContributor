@@ -1,8 +1,8 @@
-package com.githubcontributor.presentation.presentation
+package com.githubcontributor.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.githubcontributor.presentation.presentation.ui.MainViewModel
+import com.githubcontributor.presentation.ui.MainViewModel
 import javax.inject.Inject
 
 class MainViewModelFactory @Inject constructor(

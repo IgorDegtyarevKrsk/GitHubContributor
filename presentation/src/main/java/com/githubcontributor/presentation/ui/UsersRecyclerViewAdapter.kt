@@ -1,11 +1,11 @@
-package com.githubcontributor.presentation.presentation.ui
+package com.githubcontributor.presentation.ui
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.githubcontributor.presentation.R
+import com.degtyarev.presentation.R
 import com.githubcontributor.domain.User
 
 class UsersRecyclerViewAdapter(): RecyclerView.Adapter<UsersRecyclerViewAdapter.UserHolder>() {

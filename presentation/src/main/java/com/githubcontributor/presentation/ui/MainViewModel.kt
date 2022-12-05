@@ -1,4 +1,4 @@
-package com.githubcontributor.presentation.presentation.ui
+package com.githubcontributor.presentation.ui
 
 import android.os.Handler
 import android.os.Looper
@@ -16,8 +16,8 @@ import com.githubcontributor.domain.tasks.rx.RequestRxSequence
 import com.githubcontributor.domain.usecase.GetSavedVariant
 import com.githubcontributor.domain.usecase.GetTokenUseCase
 import com.githubcontributor.domain.usecase.SaveParamsUseCase
-import com.githubcontributor.presentation.App
-import com.githubcontributor.presentation.presentation.RxViewModel
+import com.githubcontributor.domain.repository.GitHubRepository
+import com.githubcontributor.presentation.RxViewModel
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.disposables.Disposable
 import io.reactivex.rxjava3.schedulers.Schedulers
@@ -71,12 +71,12 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun chooseVariant(req: RequestData, variant: Variant) {
+    fun chooseVariant(req: RequestData, variant: Variant, gitHubRepositoryProvider: () -> GitHubRepository) {
         saveParamsUseCase.save(req, variant)
         _accessTokenQuestionEnabled.value = req.password.isEmpty()
 
         clearResults()
-        val gitHubRepository = App.appComponent.createGitHubRepository()
+        val gitHubRepository = gitHubRepositoryProvider.invoke()
 
         val startTime = System.currentTimeMillis()
         _iconRunning.value = true

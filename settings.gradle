@@ -13,4 +13,5 @@ dependencyResolutionManagement {
     }
 }
 rootProject.name = "Github contributor"
-include ':presentation', ':data', ':domain'
+include ':app', ':data', ':domain'
+include ':presentation'

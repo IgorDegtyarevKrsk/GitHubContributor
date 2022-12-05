@@ -1,4 +1,4 @@
-package com.githubcontributor.presentation.presentation
+package com.githubcontributor.presentation
 
 import androidx.lifecycle.ViewModel
 import io.reactivex.rxjava3.disposables.CompositeDisposable

@@ -1,4 +1,4 @@
-package com.githubcontributor.presentation.di
+package com.githubcontributor.app.di.context
 
 import android.content.Context
 import dagger.Module

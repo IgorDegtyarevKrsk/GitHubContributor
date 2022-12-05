@@ -1,7 +1,7 @@
-package com.githubcontributor.presentation.di
+package com.githubcontributor.app.di
 
 import androidx.lifecycle.ViewModelProvider
-import com.githubcontributor.presentation.presentation.MainViewModelFactory
+import com.githubcontributor.presentation.MainViewModelFactory
 import dagger.Module
 import dagger.Provides
 

@@ -1,4 +1,4 @@
-package com.githubcontributor.presentation.di
+package com.degtyarev.githubcontributor.data.di
 
 import android.content.Context
 import androidx.room.Room

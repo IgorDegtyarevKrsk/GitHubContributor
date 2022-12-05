@@ -1,4 +1,4 @@
-package com.degtyarev.presentation
+package com.githubcontributor.presentation
 
 import org.junit.Test
 
