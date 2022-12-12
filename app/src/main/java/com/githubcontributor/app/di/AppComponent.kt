@@ -1,9 +1,6 @@
 package com.githubcontributor.app.di
 
-import com.degtyarev.githubcontributor.data.di.ContextProvider
-import com.degtyarev.githubcontributor.data.di.DaggerDataComponent
-import com.degtyarev.githubcontributor.data.di.DataComponent
-import com.degtyarev.githubcontributor.data.di.DataModule
+import com.degtyarev.githubcontributor.data.di.*
 import com.githubcontributor.app.App
 import com.githubcontributor.app.di.context.ContextModule
 import com.githubcontributor.app.di.context.DaggerContextComponent
@@ -15,13 +12,10 @@ import javax.inject.Singleton
 @Singleton
 @Component(
     dependencies = [
-        DataComponent::class
+        DataProvider::class
                    ],
     modules = [
-        ContextModule::class,
-        DataModule::class,
-        ViewModelModule::class,
-        GitHubModule::class
+        ViewModelModule::class
     ]
 )
 interface AppComponent {
@@ -38,13 +32,12 @@ interface AppComponent {
                 .contextModule(contextModule)
                 .build()
 
-            val dataComponent = DaggerDataComponent
+            val dataProvider = DaggerDataComponent
                 .factory()
                 .create(contextProvider)
 
             return DaggerAppComponent.builder()
-                .contextModule(contextModule)
-                .dataComponent(dataComponent)
+                .dataProvider(dataProvider)
                 .build()
         }
     }
