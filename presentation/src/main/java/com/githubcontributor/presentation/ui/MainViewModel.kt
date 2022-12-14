@@ -17,6 +17,7 @@ import com.githubcontributor.domain.usecase.GetSavedVariant
 import com.githubcontributor.domain.usecase.GetTokenUseCase
 import com.githubcontributor.domain.usecase.SaveParamsUseCase
 import com.githubcontributor.domain.repository.GitHubRepository
+import com.githubcontributor.domain.tasks.coroutine.*
 import com.githubcontributor.presentation.RxViewModel
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.disposables.Disposable

@@ -1,8 +1,10 @@
-package com.githubcontributor.domain.tasks
+package com.githubcontributor.domain.tasks.coroutine
 
 import com.githubcontributor.domain.repository.GitHubRepository
 import com.githubcontributor.domain.RequestData
 import com.githubcontributor.domain.User
+import com.githubcontributor.domain.tasks.aggregate
+import com.githubcontributor.domain.tasks.bodyList
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch

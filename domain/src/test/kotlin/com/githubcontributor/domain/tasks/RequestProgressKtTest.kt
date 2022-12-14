@@ -3,6 +3,7 @@ package com.githubcontributor.domain.tasks
 import com.githubcontributor.domain.contributors.MockGithubService
 import com.githubcontributor.domain.contributors.progressResults
 import com.githubcontributor.domain.contributors.testRequestData
+import com.githubcontributor.domain.tasks.coroutine.loadContributorsProgress
 import kotlinx.coroutines.test.currentTime
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert
